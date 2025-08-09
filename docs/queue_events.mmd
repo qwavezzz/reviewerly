@@ -1,0 +1,13 @@
+```mermaid
+stateDiagram-v2
+    [*] --> ingest_requested : ingest.requested
+    ingest_requested --> ingest_completed : ingest.completed
+    ingest_completed --> normalize_completed : normalize.completed
+    normalize_completed --> dedupe_completed : dedupe.completed
+    dedupe_completed --> analysis_completed : analysis.completed
+    analysis_completed --> verify_completed : verify.completed
+    verify_completed --> post_built : post.built
+    post_built --> editor_approved : editor.approved
+    editor_approved --> publish_requested : publish.requested
+    publish_requested --> publish_completed : publish.completed
+```

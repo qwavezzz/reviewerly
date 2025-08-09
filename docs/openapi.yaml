@@ -1,0 +1,166 @@
+openapi: "3.0.0"
+info:
+  title: News Portal Gateway API
+  version: "1.0.0"
+  description: |
+    API для управления процессом сбора, анализа и публикации новостей.
+servers:
+  - url: http://localhost:8000
+paths:
+  /v1/ingest/run:
+    post:
+      summary: Запуск сбора сырых источников
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                topic:
+                  type: string
+                  enum: [ecom, it, o&g]
+                window_hours:
+                  type: integer
+                  minimum: 1
+                  maximum: 48
+      responses:
+        "200":
+          description: Запущена задача сбора
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id:
+                    type: string
+  /v1/analysis/build:
+    post:
+      summary: Построение аналитики на основе источников
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                topic:
+                  type: string
+                  enum: [ecom, it, o&g]
+                source_ids:
+                  type: array
+                  items:
+                    type: integer
+      responses:
+        "200":
+          description: Аналитика создана
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  analysis_id:
+                    type: integer
+  /v1/post/build:
+    post:
+      summary: Создание поста
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                analysis_id:
+                  type: integer
+      responses:
+        "200":
+          description: Пост построен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  post_id:
+                    type: integer
+  /v1/post/approve:
+    post:
+      summary: Одобрение поста
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                post_id:
+                  type: integer
+      responses:
+        "200":
+          description: Статус поста обновлен на approved
+          content:
+            application/json:
+              schema:
+                type: object
+  /v1/post/publish:
+    post:
+      summary: Публикация поста в каналах
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                post_id:
+                  type: integer
+                channels:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Пост опубликован
+          content:
+            application/json:
+              schema:
+                type: object
+  /v1/editor/drafts:
+    get:
+      summary: Список черновиков
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, in_review, approved, published]
+          description: Статус поста
+        - name: min_score
+          in: query
+          schema:
+            type: number
+            minimum: 0
+            maximum: 100
+      responses:
+        "200":
+          description: Список черновиков
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    slug:
+                      type: string
+                    title:
+                      type: string
+                    reliability_score:
+                      type: number
+                    created_at:
+                      type: string
+                      format: date-time
+                    status:
+                      type: string

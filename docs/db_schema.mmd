@@ -1,0 +1,42 @@
+```mermaid
+erDiagram
+    source_item ||--o{ fact : contains
+    analysis ||--|{ verification : produces
+    analysis ||--o{ post : makes
+    post ||--o{ audit_log : has
+
+    source_item {
+        integer id PK
+        enum topic
+        string source_url
+        datetime published_at
+    }
+    fact {
+        integer id PK
+        integer source_id FK
+        text quote
+    }
+    analysis {
+        integer id PK
+        enum topic
+        jsonb items
+    }
+    verification {
+        integer id PK
+        integer analysis_id FK
+        numeric reliability_score
+    }
+    post {
+        integer id PK
+        string slug
+        enum topic
+        string title
+        numeric reliability_score
+        enum status
+    }
+    audit_log {
+        integer id PK
+        integer post_id FK
+        string actor
+    }
+```

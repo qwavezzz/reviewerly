@@ -1,0 +1,8 @@
+```mermaid
+stateDiagram-v2
+    [*] --> Draft
+    Draft --> InReview : post built
+    InReview --> Approved : editor approves
+    Approved --> Published : publish action
+    Published --> [*]
+```

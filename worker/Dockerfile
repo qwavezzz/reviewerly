@@ -1,0 +1,10 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY .. /app
+
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+CMD ["celery", "-A", "common.celery_app.celery_app", "worker", "--loglevel=info", "--autoscale=10,3"]

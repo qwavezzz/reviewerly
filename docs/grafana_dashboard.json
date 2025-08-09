@@ -1,0 +1,36 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "News Portal Metrics",
+    "timezone": "browser",
+    "schemaVersion": 36,
+    "version": 0,
+    "refresh": "5s",
+    "panels": [
+      {
+        "type": "graph",
+        "title": "Количество новостей по темам (час)",
+        "targets": [
+          {
+            "expr": "rate(news_ingested_total[1h])",
+            "legendFormat": "Все темы",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 }
+      },
+      {
+        "type": "graph",
+        "title": "Средний reliability score",
+        "targets": [
+          {
+            "expr": "avg(post_reliability_score)",
+            "legendFormat": "avg score",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 }
+      }
+    ]
+  }
+}
